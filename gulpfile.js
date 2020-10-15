@@ -1,6 +1,4 @@
-function defaultTask(cb) {
-  // place code for your default task here
-  cb();
-}
-
-exports.default = defaultTask
+const dev = require('./config/gulp.dev')
+//const prod = require('./config/gulp.prod')
+dev()
+//prod()
