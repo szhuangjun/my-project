@@ -7,7 +7,10 @@ var less = require('gulp-less')
 var minifyCss = require('gulp-minify-css')
 var imagemin = require('gulp-imagemin')
 var rename = require('gulp-rename')
+var browserSync = require('browser-sync').create()
+var reload = browserSync.reload;
 
+ 
 //压缩 主页 html文件
 gulp.task('html', function () {
     return gulp.src('./src/*.html')
@@ -57,6 +60,7 @@ gulp.task('less', function () {
     return gulp.src('./src/less/*.less')
         .pipe(less())
         .pipe(gulp.dest('./src/css/'))
+        .pipe(reload({stream: true})) // 浏览器自动刷新
 })
 
 //压缩css文件
@@ -82,5 +86,20 @@ gulp.task('img', function () {
         .pipe(gulp.dest('./dist/imgs/'))
 })
 
+gulp.task('server', function(){
+    browserSync.init({
+        server: "./dist",//打开的目标 文件夹
+        open: true,
+        port:3000
+    })
+   
+    gulp.watch('./src/*.html', gulp.series('html'))
+    gulp.watch('./src/pages/*.html', gulp.series('pages'))
+    gulp.watch('./src/js/*.js', gulp.series('js'))
+    gulp.watch('./src/less/*.less', gulp.series('less'))
+    gulp.watch('./src/css/*.css', gulp.series('css'))
+    gulp.watch('./src/img/*.*', gulp.series('img'))
+})
+
 //注册一个默认的任务
-gulp.task('default', gulp.series('html', 'pages', 'less', 'css', 'js', 'img'))
+gulp.task('default', gulp.series('html', 'pages', 'less', 'css', 'js', 'img', 'server'))
