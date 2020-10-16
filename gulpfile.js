@@ -11,9 +11,9 @@ var browserSync = require('browser-sync').create()
 var reload = browserSync.reload;
 
  
-//压缩 主页 html文件
-gulp.task('html', function () {
-    return gulp.src('./src/*.html')
+//压缩html
+gulp.task('pages', function () {
+    return gulp.src('./src/pages/**/*.html',{base:'src/pages'})
         .pipe(htmlmin({
             collapseWhitespace: true,
             minifyJS: true,
@@ -23,20 +23,7 @@ gulp.task('html', function () {
             removeStyleLinkTypeAttributes: true
         }))
         .pipe(gulp.dest('./dist/'))
-})
-
-//压缩子页面的html
-gulp.task('pages', function () {
-    return gulp.src('./src/pages/*.html')
-        .pipe(htmlmin({
-            collapseWhitespace: true,
-            minifyJS: true,
-            minifyCSS:true,
-            removeComments: true,
-            removeSciptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true
-        }))
-        .pipe(gulp.dest('./dist/pages/'))
+        .pipe(reload({stream: true})) // 浏览器自动刷新
 })
 
 //压缩js文件
@@ -93,8 +80,7 @@ gulp.task('server', function(){
         port:3000
     })
    
-    gulp.watch('./src/*.html', gulp.series('html'))
-    gulp.watch('./src/pages/*.html', gulp.series('pages'))
+    gulp.watch('./src/pages/**/*.html', gulp.series('pages'))
     gulp.watch('./src/js/*.js', gulp.series('js'))
     gulp.watch('./src/less/*.less', gulp.series('less'))
     gulp.watch('./src/css/*.css', gulp.series('css'))
@@ -102,4 +88,4 @@ gulp.task('server', function(){
 })
 
 //注册一个默认的任务
-gulp.task('default', gulp.series('html', 'pages', 'less', 'css', 'js', 'img', 'server'))
+gulp.task('default', gulp.series('pages', 'less', 'css', 'js', 'img', 'server'))
